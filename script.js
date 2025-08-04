@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const toastContainer = document.getElementById('toast-container');
 
     // --- Configuration ---
-    const DISCORD_WEBHOOK_URL = 'https://canary.discord.com/api/webhooks/1397207859736871023/GTqiATLLENEU-u4diuZIWNIwg703o8NmiOlBb5kiXaAEM9aMj0h8FmVzegIdhbgqMdw5'; // !!! REPLACE THIS WITH YOUR ACTUAL DISCORD WEBHOOK URL !!!
+    const DISCORD_WEBHOOK_URL = 'YOUR_DISCORD_WEBHOOK_URL_HERE'; // !!! REPLACE THIS WITH YOUR ACTUAL DISCORD WEBHOOK URL !!!
     const TOAST_DURATION = 3000; // milliseconds
 
     // --- State Variables ---
@@ -45,12 +45,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function msToHours(ms) {
-        return ms / (1000 * 60 * 60);
+        // Prevent division by zero if duration is too small or 0
+        return ms / (1000 * 60 * 60) || 0.000001;
     }
 
     function calculateMoneyPerHour(money, durationMs) {
-        if (durationMs === 0) return 0;
-        return (money / msToHours(durationMs)).toFixed(2);
+        const hours = msToHours(durationMs);
+        if (hours === 0) return 0;
+        return (money / hours).toFixed(2);
     }
 
     function generateUniqueId() {
@@ -142,14 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
         addDeleteSessionListeners();
     }
 
-    function renderJobAverages() {
-        jobAveragesBody.innerHTML = ''; // Clear existing rows
-
-        if (allJobSessions.length === 0) {
-            jobAveragesBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No job averages available yet.</td></tr>';
-            return;
-        }
-
+    function getJobAveragesData() {
         const jobData = {}; // { jobName: { totalDuration, totalMoney, totalCosts, count } }
 
         allJobSessions.forEach(session => {
@@ -167,6 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
             jobData[session.jobName].count++;
         });
 
+        const averagedJobs = [];
         for (const jobName in jobData) {
             const data = jobData[jobName];
             const avgDurationMs = data.totalDuration / data.count;
@@ -175,17 +171,45 @@ document.addEventListener('DOMContentLoaded', () => {
             const avgNet = avgMoney - avgCosts;
             const avgMoneyPerHour = calculateMoneyPerHour(avgNet, avgDurationMs);
 
+            averagedJobs.push({
+                jobName,
+                avgDurationMs,
+                avgMoney,
+                avgCosts,
+                avgNet,
+                avgMoneyPerHour: parseFloat(avgMoneyPerHour), // Convert to number for sorting
+                count: data.count
+            });
+        }
+        return averagedJobs;
+    }
+
+
+    function renderJobAverages() {
+        jobAveragesBody.innerHTML = ''; // Clear existing rows
+
+        if (allJobSessions.length === 0) {
+            jobAveragesBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No job averages available yet.</td></tr>';
+            return;
+        }
+
+        const averagedJobs = getJobAveragesData();
+
+        // Sort by Avg. M/Hr descending for display
+        averagedJobs.sort((a, b) => b.avgMoneyPerHour - a.avgMoneyPerHour);
+
+        averagedJobs.forEach(job => {
             const row = jobAveragesBody.insertRow();
             row.innerHTML = `
-                <td>${jobName}</td>
-                <td>${formatTime(avgDurationMs)}</td>
-                <td>$${avgMoney.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                <td>$${avgCosts.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                <td>$${avgNet.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                <td>$${avgMoneyPerHour}</td>
-                <td>${data.count}</td>
+                <td>${job.jobName}</td>
+                <td>${formatTime(job.avgDurationMs)}</td>
+                <td>$${job.avgMoney.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td>$${job.avgCosts.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td>$${job.avgNet.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td>$${job.avgMoneyPerHour}</td>
+                <td>${job.count}</td>
             `;
-        }
+        });
     }
 
     function updateAllViews() {
@@ -207,6 +231,32 @@ document.addEventListener('DOMContentLoaded', () => {
         timerInterval = null; // Clear interval ID
     }
 
+    // --- Input and Button State Management ---
+    function setFormState(isRunning) {
+        if (isRunning) {
+            // When job starts
+            jobNameInput.disabled = true; // Job name cannot be changed mid-job
+            moneyEarnedInput.disabled = false; // Can edit money/costs during job
+            costsInput.disabled = false;
+            additionalInfoInput.disabled = false;
+            saveSessionBtn.disabled = true; // Can't save until stopped
+
+            // Clear values for the new job
+            moneyEarnedInput.value = 0;
+            costsInput.value = 0;
+            additionalInfoInput.value = '';
+
+        } else {
+            // When job stops
+            jobNameInput.disabled = false; // Can enter new job name
+            moneyEarnedInput.disabled = false; // Still editable after stopping
+            costsInput.disabled = false;
+            additionalInfoInput.disabled = false;
+            saveSessionBtn.disabled = false; // Can save now
+        }
+    }
+
+
     // --- Event Listeners ---
 
     startStopBtn.addEventListener('click', () => {
@@ -226,10 +276,9 @@ document.addEventListener('DOMContentLoaded', () => {
             startStopBtn.textContent = 'Stop Job';
             startStopBtn.classList.remove('primary-btn');
             startStopBtn.classList.add('danger-btn');
-            jobNameInput.disabled = true;
-            jobCompletionForm.style.display = 'none'; // Hide completion form while tracking
             showToast(`Started tracking "${currentJobName}"`, 'success');
 
+            setFormState(true); // Set inputs to be editable and save button disabled
             startTimerDisplay();
 
         } else {
@@ -240,26 +289,20 @@ document.addEventListener('DOMContentLoaded', () => {
             startStopBtn.textContent = 'Start Job';
             startStopBtn.classList.remove('danger-btn');
             startStopBtn.classList.add('primary-btn');
-            jobNameInput.disabled = false;
-            jobCompletionForm.style.display = 'block'; // Show completion form
-            // Ensure inputs are reset to 0 or empty for convenience
-            moneyEarnedInput.value = 0;
-            costsInput.value = 0;
-            additionalInfoInput.value = '';
-
-            // The timer display will show the final duration until a new job starts
-            // or the session is saved.
             showToast(`Stopped tracking "${currentJobName}". Fill details to save.`, 'default');
+
+            setFormState(false); // Enable save button
         }
     });
 
     saveSessionBtn.addEventListener('click', () => {
-        if (startTime === 0) {
+        if (startTime === 0) { // Should not happen with disabled button, but as a safeguard
             showToast('No active job session to save. Please start a job first.', 'error');
             return;
         }
 
-        const endTime = Date.now();
+        // Use the current value in the input fields
+        const endTime = Date.now(); // This is the actual end time of the session
         const durationMs = endTime - startTime;
         const money = parseFloat(moneyEarnedInput.value) || 0; // Ensures it's a number, defaults to 0
         const costs = parseFloat(costsInput.value) || 0;     // Ensures it's a number, defaults to 0
@@ -269,7 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
             id: generateUniqueId(),
             jobName: currentJobName,
             startTime: startTime,
-            endTime: endTime,
+            endTime: endTime, // Store actual end time for completeness
             durationMs: durationMs,
             money: money,
             costs: costs,
@@ -282,15 +325,15 @@ document.addEventListener('DOMContentLoaded', () => {
         updateAllViews();
         showToast('Job session saved successfully!', 'success');
 
-        // Optionally send to Discord
+        // Send individual session to Discord
         sendToDiscord(newSession);
 
         // Reset for next job
-        jobCompletionForm.style.display = 'none';
         jobNameInput.value = '';
         timerDisplay.textContent = '00:00:00';
         startTime = 0;
         currentJobName = '';
+        setFormState(false); // Ensure states are ready for a new job (job name enabled, other inputs cleared/ready)
     });
 
     clearAllDataBtn.addEventListener('click', () => {
@@ -310,7 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
             jobNameInput.disabled = false;
             jobNameInput.value = '';
             timerDisplay.textContent = '00:00:00';
-            jobCompletionForm.style.display = 'none';
+            setFormState(false); // Ensure inputs are reset and save button is disabled
         }
     });
 
@@ -343,7 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const payload = {
             embeds: [{
                 title: `📊 New FiveM Job Session Recorded: ${session.jobName}`,
-                color: 6950293, // A nice purple color for Discord embeds
+                color: 6950293, // Using a consistent color, can adjust for grayscale if preferred
                 fields: [
                     { name: '💰 Money Earned', value: `$${session.money.toLocaleString()}`, inline: true },
                     { name: '💸 Costs', value: `$${session.costs.toLocaleString()}`, inline: true },
@@ -353,15 +396,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     { name: '🗓️ Date', value: new Date(session.timestamp).toLocaleDateString(), inline: true }
                 ],
                 footer: {
-                    // !!! CUSTOMIZE THIS !!! Your Name/Community for the Discord embed footer
-                    text: 'FiveM Job Tracker by Your Name/Community'
+                    text: 'FiveM Job Tracker by Your Name/Community' // Customize this
                 },
                 timestamp: new Date(session.timestamp).toISOString()
             }]
         };
 
         if (session.additionalInfo) {
-            // Add description field if additional info exists
             payload.embeds[0].description = `**Additional Info:**\n${session.additionalInfo}`;
         }
 
@@ -381,11 +422,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Failed to send Discord webhook:', response.status, response.statusText);
                 const errorText = await response.text();
                 console.error('Error response:', errorText);
-                showToast(`Failed to send to Discord: ${response.statusText}. Check console.`, 'error');
+                showToast(`Failed to send job session to Discord: ${response.statusText}. Check console.`, 'error');
             }
         } catch (error) {
             console.error('Error sending Discord webhook:', error);
-            showToast('An error occurred while sending to Discord. Check console for details.', 'error');
+            showToast('An error occurred while trying to send to Discord. Check console for details.', 'error');
         }
     }
 
@@ -431,18 +472,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 startTime = savedStartTime;
                 isTracking = true;
                 jobNameInput.value = jobName;
-                jobNameInput.disabled = true;
+                showToast(`Resumed tracking "${currentJobName}".`, 'default');
+
+                setFormState(true); // Set form state for running job
                 startStopBtn.textContent = 'Stop Job';
                 startStopBtn.classList.remove('primary-btn');
                 startStopBtn.classList.add('danger-btn');
-                jobCompletionForm.style.display = 'none'; // Hide completion form
                 startTimerDisplay();
-                showToast(`Resumed tracking "${currentJobName}".`, 'default');
             } else {
                 // If user doesn't want to resume, clear the saved state
                 clearActiveJobState();
                 showToast('Previous active job discarded.', 'default');
+                setFormState(false); // Set form state for new job
             }
+        } else {
+            setFormState(false); // Initial state: ready to start a new job
         }
     }
 
