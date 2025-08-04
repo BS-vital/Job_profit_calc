@@ -1,0 +1,376 @@
+:root {
+    --bg-color: #1a1a1a;
+    --text-color: #e0e0e0;
+    --primary-color: #6a0dad; /* Dark Purple */
+    --secondary-color: #333;
+    --border-color: #444;
+    --input-bg: #2a2a2a;
+    --hover-bg: #444;
+    --button-primary-bg: #6a0dad;
+    --button-primary-hover: #7f2ad0;
+    --button-success-bg: #28a745;
+    --button-success-hover: #218838;
+    --button-danger-bg: #dc3545;
+    --button-danger-hover: #c82333;
+    --table-header-bg: #3a3a3a;
+    --table-row-even-bg: #2a2a2a;
+    --table-row-odd-bg: #1f1f1f;
+
+    /* Toast colors */
+    --toast-success-bg: #28a745;
+    --toast-error-bg: #dc3545;
+    --toast-text-color: white;
+}
+
+body.light-mode {
+    --bg-color: #f4f4f4;
+    --text-color: #333;
+    --primary-color: #007bff; /* Blue */
+    --secondary-color: #ddd;
+    --border-color: #ccc;
+    --input-bg: #fff;
+    --hover-bg: #eee;
+    --button-primary-bg: #007bff;
+    --button-primary-hover: #0056b3;
+    --button-success-bg: #28a745;
+    --button-success-hover: #218838;
+    --button-danger-bg: #dc3545;
+    --button-danger-hover: #c82333;
+    --table-header-bg: #e0e0e0;
+    --table-row-even-bg: #f0f0f0;
+    --table-row-odd-bg: #f9f9f9;
+
+    /* Toast colors for light mode (can keep them similar or adjust) */
+    --toast-success-bg: #28a745;
+    --toast-error-bg: #dc3545;
+    --toast-text-color: white;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align to top */
+    min-height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.container {
+    background-color: var(--secondary-color);
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 900px;
+    position: relative; /* For theme switch positioning */
+}
+
+h1, h2 {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+section {
+    background-color: var(--input-bg);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    border: 1px solid var(--border-color);
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"],
+textarea {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+textarea:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    margin-right: 10px; /* For multiple buttons */
+}
+
+.btn.primary-btn {
+    background-color: var(--button-primary-bg);
+    color: white;
+}
+.btn.primary-btn:hover:not(:disabled) {
+    background-color: var(--button-primary-hover);
+}
+
+.btn.success-btn {
+    background-color: var(--button-success-bg);
+    color: white;
+}
+.btn.success-btn:hover:not(:disabled) {
+    background-color: var(--button-success-hover);
+}
+
+.btn.danger-btn {
+    background-color: var(--button-danger-bg);
+    color: white;
+    float: right; /* Align clear data button to right */
+    margin-top: -5px; /* Adjust vertical position */
+}
+.btn.danger-btn:hover:not(:disabled) {
+    background-color: var(--button-danger-hover);
+}
+
+.btn:disabled {
+    background-color: var(--border-color);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.timer {
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin: 20px 0;
+    color: var(--primary-color);
+    background-color: var(--secondary-color);
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
+}
+
+.results-table-container {
+    overflow-x: auto; /* Enable horizontal scroll for small screens */
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 0.9em;
+}
+
+table th, table td {
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    text-align: left;
+    white-space: nowrap; /* Prevent text wrapping in cells */
+}
+
+table th {
+    background-color: var(--table-header-bg);
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+table tbody tr:nth-child(even) {
+    background-color: var(--table-row-even-bg);
+}
+
+table tbody tr:nth-child(odd) {
+    background-color: var(--table-row-odd-bg);
+}
+
+table tbody tr:hover {
+    background-color: var(--hover-bg);
+}
+
+/* Theme Switcher Styles */
+.theme-switch {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    display: flex;
+    align-items: center;
+}
+
+.dark-mode-checkbox {
+    display: none;
+}
+
+.dark-mode-label {
+    width: 60px;
+    height: 30px;
+    background-color: var(--border-color);
+    border-radius: 15px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5px;
+}
+
+.dark-mode-label .sun,
+.dark-mode-label .moon {
+    font-size: 1.2em;
+    position: absolute;
+    transition: opacity 0.3s ease;
+}
+
+.dark-mode-label .sun {
+    left: 5px;
+    opacity: 0;
+}
+
+.dark-mode-label .moon {
+    right: 5px;
+    opacity: 1;
+}
+
+.dark-mode-checkbox:checked + .dark-mode-label .sun {
+    opacity: 1;
+}
+
+.dark-mode-checkbox:checked + .dark-mode-label .moon {
+    opacity: 0;
+}
+
+.dark-mode-label .toggle-button {
+    width: 26px;
+    height: 26px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode-checkbox:checked + .dark-mode-label .toggle-button {
+    transform: translateX(30px);
+}
+
+/* Toast Notification Styles */
+#toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast-message {
+    background-color: var(--primary-color); /* Default toast color */
+    color: var(--toast-text-color);
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transform: translateX(100%);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    min-width: 200px;
+    text-align: center;
+}
+
+.toast-message.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.toast-message.success {
+    background-color: var(--toast-success-bg);
+}
+
+.toast-message.error {
+    background-color: var(--toast-error-bg);
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+    .theme-switch {
+        top: 15px;
+        right: 15px;
+    }
+    h1 {
+        font-size: 1.8em;
+    }
+    h2 {
+        font-size: 1.4em;
+    }
+    .timer {
+        font-size: 2em;
+    }
+    table {
+        font-size: 0.8em;
+    }
+    table th, table td {
+        padding: 8px 10px;
+    }
+    #toast-container {
+        top: 10px;
+        right: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    .container {
+        padding: 15px;
+    }
+    .btn {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    .btn.danger-btn {
+        float: none;
+    }
+    .input-group label {
+        font-size: 0.9em;
+    }
+    input[type="text"],
+    input[type="number"],
+    textarea {
+        width: calc(100% - 20px);
+    }
+    .theme-switch {
+        top: 10px;
+        right: 10px;
+    }
+    .toast-message {
+        min-width: unset;
+        width: calc(100% - 40px); /* Adjust for padding/margin */
+    }
+}
