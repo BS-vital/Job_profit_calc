@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FiveM Job Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⏰</text></svg>">
+</head>
+<body>
+    <div id="toast-container"></div> <div class="container">
+        <h1>FiveM Job Tracker</h1>
+
+        <div class="theme-switch">
+            <input type="checkbox" id="dark-mode-toggle" class="dark-mode-checkbox">
+            <label for="dark-mode-toggle" class="dark-mode-label">
+                <span class="sun">☀️</span>
+                <span class="moon">🌙</span>
+                <span class="toggle-button"></span>
+            </label>
+        </div>
+
+        <section class="job-tracker">
+            <div class="input-group">
+                <label for="job-name">Job Name:</label>
+                <input type="text" id="job-name" placeholder="e.g., Trucking, Fishing, Robbery">
+            </div>
+            <button id="start-stop-btn" class="btn primary-btn">Start Job</button>
+            <p id="timer-display" class="timer">00:00:00</p>
+        </section>
+
+        <section class="job-completion-form" style="display: none;">
+            <h2>Complete Job Session</h2>
+            <div class="input-group">
+                <label for="money-earned">Money Earned ($):</label>
+                <input type="number" id="money-earned" value="0" min="0">
+            </div>
+            <div class="input-group">
+                <label for="costs">Costs ($):</label>
+                <input type="number" id="costs" value="0" min="0">
+            </div>
+            <div class="input-group">
+                <label for="additional-info">Additional Info:</label>
+                <textarea id="additional-info" rows="3" placeholder="Any notes about this session..."></textarea>
+            </div>
+            <button id="save-session-btn" class="btn success-btn">Save Session & Record</button>
+        </section>
+
+        <section class="job-results">
+            <h2>Past Job Sessions</h2>
+            <button id="clear-all-data-btn" class="btn danger-btn">Clear All Data</button>
+            <div id="past-sessions-container" class="results-table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Job</th>
+                            <th>Duration</th>
+                            <th>Earned</th>
+                            <th>Costs</th>
+                            <th>Net</th>
+                            <th>M/Hr</th>
+                            <th>Date</th>
+                            <th>Info</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="past-sessions-body">
+                        </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="job-averages">
+            <h2>Job Averages</h2>
+            <div id="job-averages-container" class="results-table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Job Name</th>
+                            <th>Avg. Duration</th>
+                            <th>Avg. Money Earned</th>
+                            <th>Avg. Costs</th>
+                            <th>Avg. Net Profit</th>
+                            <th>Avg. M/Hr</th>
+                            <th>Total Sessions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="job-averages-body">
+                        </tbody>
+                </table>
+            </div>
+        </section>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
