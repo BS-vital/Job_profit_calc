@@ -1,46 +1,48 @@
 :root {
+    /* Dark Mode (Default) */
     --bg-color: #1a1a1a;
     --text-color: #e0e0e0;
-    --primary-color: #6a0dad; /* Dark Purple */
-    --secondary-color: #333;
+    --primary-color: #999; /* A light gray for headings/accents */
+    --secondary-color: #2a2a2a; /* Main content background */
     --border-color: #444;
-    --input-bg: #2a2a2a;
+    --input-bg: #333;
     --hover-bg: #444;
-    --button-primary-bg: #6a0dad;
-    --button-primary-hover: #7f2ad0;
-    --button-success-bg: #28a745;
+    --button-primary-bg: #555;
+    --button-primary-hover: #777;
+    --button-success-bg: #28a745; /* Green */
     --button-success-hover: #218838;
-    --button-danger-bg: #dc3545;
+    --button-danger-bg: #dc3545; /* Red */
     --button-danger-hover: #c82333;
-    --table-header-bg: #3a3a3a;
-    --table-row-even-bg: #2a2a2a;
+    --table-header-bg: #444;
+    --table-row-even-bg: #222;
     --table-row-odd-bg: #1f1f1f;
 
-    /* Toast colors */
+    /* Toast colors (kept vibrant for visibility) */
     --toast-success-bg: #28a745;
     --toast-error-bg: #dc3545;
     --toast-text-color: white;
 }
 
 body.light-mode {
+    /* Light Mode */
     --bg-color: #f4f4f4;
     --text-color: #333;
-    --primary-color: #007bff; /* Blue */
-    --secondary-color: #ddd;
+    --primary-color: #666; /* A dark gray for headings/accents */
+    --secondary-color: #ffffff; /* Main content background */
     --border-color: #ccc;
-    --input-bg: #fff;
-    --hover-bg: #eee;
-    --button-primary-bg: #007bff;
-    --button-primary-hover: #0056b3;
+    --input-bg: #ffffff;
+    --hover-bg: #e9e9e9;
+    --button-primary-bg: #888;
+    --button-primary-hover: #666;
     --button-success-bg: #28a745;
     --button-success-hover: #218838;
     --button-danger-bg: #dc3545;
     --button-danger-hover: #c82333;
-    --table-header-bg: #e0e0e0;
-    --table-row-even-bg: #f0f0f0;
-    --table-row-odd-bg: #f9f9f9;
+    --table-header-bg: #eee;
+    --table-row-even-bg: #f9f9f9;
+    --table-row-odd-bg: #ffffff;
 
-    /* Toast colors for light mode (can keep them similar or adjust) */
+    /* Toast colors (kept vibrant for visibility) */
     --toast-success-bg: #28a745;
     --toast-error-bg: #dc3545;
     --toast-text-color: white;
@@ -112,6 +114,12 @@ textarea:focus {
     border-color: var(--primary-color);
     outline: none;
 }
+input:disabled, textarea:disabled {
+    background-color: var(--border-color); /* Lighter gray for disabled */
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
 
 .btn {
     display: inline-block;
@@ -144,8 +152,12 @@ textarea:focus {
 .btn.danger-btn {
     background-color: var(--button-danger-bg);
     color: white;
-    float: right; /* Align clear data button to right */
-    margin-top: -5px; /* Adjust vertical position */
+    /* Removed float: right; */
+    margin-bottom: 15px; /* Add space below the button */
+    display: block; /* Make it take full width or align as block */
+    margin-left: auto; /* Center if taking full width */
+    margin-right: auto;
+    width: fit-content; /* Adjust width to content for centering */
 }
 .btn.danger-btn:hover:not(:disabled) {
     background-color: var(--button-danger-hover);
@@ -339,6 +351,11 @@ table tbody tr:hover {
     #toast-container {
         top: 10px;
         right: 10px;
+    }
+    .btn.danger-btn {
+        width: 100%; /* Make clear data button full width */
+        margin-left: 0;
+        margin-right: 0;
     }
 }
 
