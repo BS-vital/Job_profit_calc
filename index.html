@@ -8,7 +8,9 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⏰</text></svg>">
 </head>
 <body>
-    <div id="toast-container"></div> <div class="container">
+    <div id="toast-container"></div>
+
+    <div class="container">
         <h1>FiveM Job Tracker</h1>
 
         <div class="theme-switch">
@@ -29,8 +31,8 @@
             <p id="timer-display" class="timer">00:00:00</p>
         </section>
 
-        <section class="job-completion-form" style="display: none;">
-            <h2>Complete Job Session</h2>
+        <section class="job-completion-form">
+            <h2>Job Session Details</h2>
             <div class="input-group">
                 <label for="money-earned">Money Earned ($):</label>
                 <input type="number" id="money-earned" value="0" min="0">
@@ -43,7 +45,7 @@
                 <label for="additional-info">Additional Info:</label>
                 <textarea id="additional-info" rows="3" placeholder="Any notes about this session..."></textarea>
             </div>
-            <button id="save-session-btn" class="btn success-btn">Save Session & Record</button>
+            <button id="save-session-btn" class="btn success-btn" disabled>Save Session & Record</button>
         </section>
 
         <section class="job-results">
