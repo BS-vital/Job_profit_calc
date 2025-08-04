@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const toastContainer = document.getElementById('toast-container');
 
     // --- Configuration ---
-    const DISCORD_WEBHOOK_URL = 'YOUR_DISCORD_WEBHOOK_URL_HERE'; // !!! REPLACE THIS WITH YOUR ACTUAL DISCORD WEBHOOK URL !!!
+    const DISCORD_WEBHOOK_URL = 'https://canary.discord.com/api/webhooks/1397207859736871023/GTqiATLLENEU-u4diuZIWNIwg703o8NmiOlBb5kiXaAEM9aMj0h8FmVzegIdhbgqMdw5'; // !!! REPLACE THIS WITH YOUR ACTUAL DISCORD WEBHOOK URL !!!
     const TOAST_DURATION = 3000; // milliseconds
 
     // --- State Variables ---
